@@ -1,0 +1,32 @@
+{
+  "name": "singular-backend",
+  "version": "1.0.0",
+  "description": "The backend service for the real-time multiplayer game Singular.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "lint": "npx eslint ./**.js > lintresult.txt",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ist-git@git.uwaterloo.ca:singular/backend.git"
+  },
+  "keywords": [
+    "Singular",
+    "Backend",
+    "Multiplayer",
+    "Real-time",
+    "Express"
+  ],
+  "author": "Jiadi Tao",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "nodemon": "^2.0.15"
+  }
+}
