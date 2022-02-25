@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 9000;
 
 // Create and initialize the SocketIO server.
 const SocketSetup = require("./socket/socket-setup");
-const io = SocketSetup.setup(server, frontEndURL);
+SocketSetup.setup(server, frontEndURL); // this method returns the io object.
 
 
 // Setting up the routes
