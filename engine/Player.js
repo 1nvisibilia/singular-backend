@@ -11,11 +11,13 @@ class Player {
 	health;
 
 	/**
+	 * @param { String } id
 	 * @param { Number } xCord
 	 * @param { Number } yCord
 	 * @param { Number } health
 	**/
-	constructor(xCord, yCord, health) {
+	constructor(id, xCord, yCord, health) {
+		this.id = id;
 		this.xCord = xCord;
 		this.yCord = yCord;
 		this.health = health;
@@ -31,4 +33,4 @@ class Player {
 	}
 }
 
-export default Player;
+module.exports = Player;

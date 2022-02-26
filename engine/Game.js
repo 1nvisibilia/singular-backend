@@ -7,11 +7,12 @@ const stateMap = {
 };
 
 class Game {
-	// /**
-	//  * @type { Array : Player } players
-	//  * @type { Number } gameState
-	//  * @type { Object } stateMap
-	//  */
+	/**
+	 * @type { Array : Player } players
+	 * @type { Number } gameState
+	 * @type { Object } stateMap
+	 */
+
 	players;
 	gameState;
 
@@ -19,9 +20,7 @@ class Game {
 	 * @param { void }
 	 */
 	constructor() {
-		this.players = new Array(maxPlayers);
-		this.players.fill(null);
-		Object.seal(this.players);
+		this.players = [];
 		this.gameState = stateMap.waiting;
 	}
 
@@ -29,11 +28,31 @@ class Game {
 	 * @param { Player } newPlayer 
 	 */
 	addPlayer(newPlayer) {
+		if (this.players.length === 6) {
+			return false;
+		}
+
 		this.players.push(newPlayer);
 
 		if (this.players.length === maxPlayers) {
 			this.gameState = ready;
 		}
+
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param { String } playerID
+	 * @return { Boolean } : if removeal is successful
+	 */
+	removePlayer(playerID) {
+		const disconnectedUserId = this.players.findIndex(player => player.id === playerID);
+		if (disconnectedUserId !== -1) {
+			this.players.splice(disconnectedUserId, 1);
+			return true;
+		}
+		return false;
 	}
 }
 
