@@ -1,3 +1,5 @@
+const Player = require("./Player");
+
 const maxPlayers = 6;
 const stateMap = {
 	waiting: 0,
@@ -8,12 +10,17 @@ const stateMap = {
 
 class Game {
 	/**
-	 * @type { Array : Player } players
-	 * @type { Number } gameState
-	 * @type { Object } stateMap
+	 * @typedef { { players: Player[], gameState: Number } } Game
+	 * @typedef { { xCord: Number, yCord: Number, health: Number} } Attribute
 	 */
 
+	/**
+	 * @type { Player[] } players
+	 */
 	players;
+	/**
+	 * @type { Number } gameState
+	 */
 	gameState;
 
 	/**
@@ -25,26 +32,29 @@ class Game {
 	}
 
 	/**
-	 * @param { Player } newPlayer 
+	 * @param { Number } newPlayerID
+	 * @param { Attribute } attributes
+	 * @returns { Player } : the player added or null if unsuccessful
 	 */
-	addPlayer(newPlayer) {
+	addPlayer(newPlayerID, attributes) {
 		if (this.players.length === 6) {
-			return false;
+			return null;
 		}
 
+		const newPlayer = new Player(newPlayerID, attributes.xCord, attributes.yCord, attributes.health);
 		this.players.push(newPlayer);
 
 		if (this.players.length === maxPlayers) {
-			this.gameState = ready;
+			this.gameState = stateMap.ready;
 		}
 
-		return true;
+		return newPlayer;
 	}
 
 	/**
 	 * 
 	 * @param { String } playerID
-	 * @returns { Boolean } : if removeal is successful
+	 * @returns { Boolean } : if removal is successful
 	 */
 	removePlayer(playerID) {
 		const disconnectedUserId = this.players.findIndex(player => player.id === playerID);

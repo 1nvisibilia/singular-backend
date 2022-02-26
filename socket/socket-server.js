@@ -1,11 +1,19 @@
-const uuid = require('uuid');
+// const uuid = require("uuid"); // for different game rooms.
 const { Server: SocketServer } = require("socket.io");
 const Game = require("../engine/Game.js");
-const Player = require("../engine/Player.js");
 
-const players = [];
-const userIds = {};
+/**
+ * @typedef { { id : Number } } User
+ */
+/**
+ * @type { User[] }
+ */
+const users = [];
+/**
+ * @type { Game[] }
+ */
 const games = [];
+games.push(new Game());
 
 const currentGameStatus = "current game status";
 const newPlayerJoined = "new user joined";
@@ -13,15 +21,46 @@ const newPlayerJoined = "new user joined";
 /**
  *
  * @param { String } userID
- * @returns
+ * @returns { Boolean } : if removal is successful
  */
 function removeUser(userID) {
-	const disconnectedUserId = players.findIndex(player => player.id === userID);
-	if (disconnectedUserId !== -1) {
-		players.splice(disconnectedUserId, 1);
+	const disconnectedUserIndex = users.findIndex(user => user.id === userID);
+	if (disconnectedUserIndex !== -1) {
+		users.splice(disconnectedUserIndex, 1);
 		return true;
 	}
 	return false;
+}
+
+/**
+ * @param { Socket } socket
+ * @param { SocketServer } io
+ */
+function onConnect(socket, io) {
+	users.push({ id: socket.id });
+	console.log("a user connected", socket.id);
+
+	const newPlayer = games[0].addPlayer(socket.id, {
+		xCord: 100,
+		yCord: 100,
+		health: 10
+	});
+
+	socket.emit(currentGameStatus, games);
+
+	const currentPlayers = games[0].players;
+	currentPlayers.forEach((currentPlayer) => {
+		io.to(currentPlayer.id).emit(newPlayerJoined, newPlayer);
+	});
+}
+
+/**
+ * @param { Number } socketID
+ */
+function onDisconnect(socketID) {
+	const removalStatus = removeUser(socketID);
+	games[0].removePlayer(socketID);
+	console.log(socketID, "disconnected. removal status: ", removalStatus);
 }
 
 const SocketSetup = {
@@ -32,28 +71,11 @@ const SocketSetup = {
 			}
 		});
 
-		games.push(new Game());
+		io.on("connection", (socket) => {
+			onConnect(socket, io);
 
-		io.on('connection', (socket) => {
-			userIds[socket.id] = true;
-			const newPlayer = new Player(socket.id, 10, 10, 10);
-			console.log("a user connected", socket.id);
-			players.push(newPlayer);
-
-			games[0].addPlayer(newPlayer);
-
-			socket.emit(currentGameStatus, games);
-
-			const currentPlayers = games[0].players;
-			currentPlayers.forEach((currentPlayer) => {
-				io.to(currentPlayer.id).emit(newPlayerJoined, newPlayer);
-			});
-
-			socket.on('disconnect', () => {
-				delete userIds[socket.id];
-				const removalStatus = removeUser(socket.id);
-				games[0].removePlayer(socket.id);
-				console.log(socket.id, "disconnected. removal status: ", removalStatus);
+			socket.on("disconnect", () => {
+				onDisconnect(socket.id);
 			});
 		});
 
