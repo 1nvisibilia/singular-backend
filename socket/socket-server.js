@@ -10,6 +10,11 @@ const games = [];
 const currentGameStatus = "current game status";
 const newPlayerJoined = "new user joined";
 
+/**
+ *
+ * @param { String } userID
+ * @returns
+ */
 function removeUser(userID) {
 	const disconnectedUserId = players.findIndex(player => player.id === userID);
 	if (disconnectedUserId !== -1) {

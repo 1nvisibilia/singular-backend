@@ -44,7 +44,7 @@ class Game {
 	/**
 	 * 
 	 * @param { String } playerID
-	 * @return { Boolean } : if removeal is successful
+	 * @returns { Boolean } : if removeal is successful
 	 */
 	removePlayer(playerID) {
 		const disconnectedUserId = this.players.findIndex(player => player.id === playerID);
