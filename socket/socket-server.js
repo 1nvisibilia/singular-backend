@@ -40,17 +40,15 @@ function onConnect(socket, io) {
 	users.push({ id: socket.id });
 	console.log("a user connected", socket.id);
 
-	const newPlayer = games[0].addPlayer(socket.id, {
-		xCord: 100,
-		yCord: 100,
-		health: 10
-	});
+	const newPlayer = games[0].addPlayer(socket.id, { health: 10 }); // we will check if room is full/ returns null.
 
-	socket.emit(currentGameStatus, games);
+	socket.emit(currentGameStatus, games[0]);
 
 	const currentPlayers = games[0].players;
 	currentPlayers.forEach((currentPlayer) => {
-		io.to(currentPlayer.id).emit(newPlayerJoined, newPlayer);
+		if (currentPlayer.id !== newPlayer.id) {
+			io.to(currentPlayer.id).emit(newPlayerJoined, newPlayer);
+		}
 	});
 }
 

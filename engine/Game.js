@@ -7,11 +7,19 @@ const stateMap = {
 	ingame: 2,
 	finished: 3
 };
+const initialPositions = [
+	[100, 100],
+	[200, 100],
+	[300, 100],
+	[100, 200],
+	[200, 200],
+	[300, 200]
+];
 
 class Game {
 	/**
 	 * @typedef { { players: Player[], gameState: Number } } Game
-	 * @typedef { { xCord: Number, yCord: Number, health: Number} } Attribute
+	 * @typedef { { health: Number} } Attribute
 	 */
 
 	/**
@@ -41,7 +49,9 @@ class Game {
 			return null;
 		}
 
-		const newPlayer = new Player(newPlayerID, attributes.xCord, attributes.yCord, attributes.health);
+		const position = initialPositions[this.players.length];
+
+		const newPlayer = new Player(newPlayerID, position[0], position[1], attributes.health);
 		this.players.push(newPlayer);
 
 		if (this.players.length === maxPlayers) {
