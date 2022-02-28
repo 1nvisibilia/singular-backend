@@ -30,12 +30,21 @@ class Game {
 	 * @type { Number } gameState
 	 */
 	gameState;
+	/**
+	 * @type { Boolean[] } spots
+	 */
+	spots;
 
 	/**
 	 * @param { void }
 	 */
 	constructor() {
-		this.players = [];
+		this.players = new Array(maxPlayers);
+		this.players.fill(null);
+		Object.seal(this.players);
+		this.spots = new Array(maxPlayers);
+		this.spots.fill(true);
+		Object.seal(this.spots);
 		this.gameState = stateMap.waiting;
 	}
 
@@ -45,18 +54,20 @@ class Game {
 	 * @returns { Player } : the player added or null if unsuccessful
 	 */
 	addPlayer(newPlayerID, attributes) {
-		if (this.players.length === 6) {
+		const index = this.spots.findIndex(spot => spot);
+		if (index === -1) {
 			return null;
 		}
 
-		const position = initialPositions[this.players.length];
+		const position = initialPositions[index];
+		this.spots[index] = false;
 
 		const newPlayer = new Player(newPlayerID, position[0], position[1], attributes.health);
-		this.players.push(newPlayer);
+		this.players[index] = newPlayer;
 
-		if (this.players.length === maxPlayers) {
-			this.gameState = stateMap.ready;
-		}
+		// if (this.players.length === maxPlayers) {
+		// 	this.gameState = stateMap.ready;
+		// }
 
 		return newPlayer;
 	}
@@ -67,9 +78,10 @@ class Game {
 	 * @returns { Boolean } : if removal is successful
 	 */
 	removePlayer(playerID) {
-		const disconnectedUserId = this.players.findIndex(player => player.id === playerID);
-		if (disconnectedUserId !== -1) {
-			this.players.splice(disconnectedUserId, 1);
+		const disconnectedUserIndex = this.players.findIndex(player => player && player.id === playerID);
+		if (disconnectedUserIndex !== -1) {
+			this.players[disconnectedUserIndex] = null;
+			this.spots[disconnectedUserIndex] = true;
 			return true;
 		}
 		return false;

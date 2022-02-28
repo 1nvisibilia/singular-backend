@@ -16,7 +16,8 @@ const games = [];
 games.push(new Game());
 
 const currentGameStatus = "current game status";
-const newPlayerJoined = "new user joined";
+const aPlayerJoined = "a user joined";
+const aPlayerLeft = "a player left";
 
 /**
  *
@@ -46,18 +47,20 @@ function onConnect(socket, io) {
 
 	const currentPlayers = games[0].players;
 	currentPlayers.forEach((currentPlayer) => {
-		if (currentPlayer.id !== newPlayer.id) {
-			io.to(currentPlayer.id).emit(newPlayerJoined, newPlayer);
+		if (currentPlayer && currentPlayer.id !== newPlayer.id) {
+			io.to(currentPlayer.id).emit(aPlayerJoined, newPlayer);
 		}
 	});
 }
 
 /**
+ * @param { SocketServer } io
  * @param { Number } socketID
  */
-function onDisconnect(socketID) {
+function onDisconnect(io, socketID) {
 	const removalStatus = removeUser(socketID);
 	games[0].removePlayer(socketID);
+	io.emit(aPlayerLeft, games[0]);
 	console.log(socketID, "disconnected. removal status: ", removalStatus);
 }
 
@@ -71,9 +74,10 @@ const SocketSetup = {
 
 		io.on("connection", (socket) => {
 			onConnect(socket, io);
-
+			console.log(games[0]);
 			socket.on("disconnect", () => {
-				onDisconnect(socket.id);
+				onDisconnect(io, socket.id);
+				console.log(games[0]);
 			});
 		});
 
