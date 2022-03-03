@@ -19,7 +19,7 @@ const initialPositions = [
 class Game {
 	/**
 	 * @typedef { { players: Player[], gameState: Number } } Game
-	 * @typedef { { health: Number} } Attribute
+	 * @typedef { { health: Number } } Attribute
 	 */
 
 	/**
