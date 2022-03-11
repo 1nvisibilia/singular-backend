@@ -86,6 +86,30 @@ class Game {
 		}
 		return false;
 	}
+
+	/**
+	 * @param { Map } InputMap
+	 */
+	updateEntities(InputMap) {
+		// Change players' next move
+		for (const [PlayerID, inputData] of InputMap.entries()) {
+			if (inputData === null) {
+				continue;
+			}
+
+			const currentPlayer = this.players.find((player) => player !== null && player.id === PlayerID);
+			if (currentPlayer !== undefined) {
+				currentPlayer.setNextMove(inputData);
+			}
+		}
+
+		// Change players moves
+		this.players.forEach((player) => {
+			if (player !== null) {
+				player.update();
+			}
+		});
+	}
 }
 
 module.exports = Game;
