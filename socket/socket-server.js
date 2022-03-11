@@ -1,5 +1,4 @@
 // const uuid = require("uuid"); // for different game rooms.
-const { Server: SocketServer } = require("socket.io");
 const GameSocket = require("./GameSocket.js");
 
 const SocketSetup = {
