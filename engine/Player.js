@@ -46,6 +46,8 @@ class Player {
 			this.nextY = 0 - moveSpeed;
 		} else if (inputData[down] === true) {
 			this.nextY = moveSpeed;
+		} else {
+			this.nextY = 0;
 		}
 
 		if (inputData[left] === true && inputData[right] === true) {
@@ -54,6 +56,8 @@ class Player {
 			this.nextX = 0 - moveSpeed;
 		} else if (inputData[right] === true) {
 			this.nextX = moveSpeed;
+		} else {
+			this.nextX = 0;
 		}
 	}
 

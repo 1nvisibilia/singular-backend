@@ -7,7 +7,7 @@ const aPlayerLeft = "a player left";
 const requestInput = "request input";
 const sendBackInput = "send back input";
 const sendGameData = "send game data";
-const updateFrequency = 60;
+const updateFrequency = 25; // does this affect the front-end animation frame? why?
 
 class GameSocket {
 	/**
