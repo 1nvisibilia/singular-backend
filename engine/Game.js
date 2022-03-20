@@ -1,5 +1,8 @@
 const Player = require("./Player");
 
+const move = "move";
+const click = "click";
+const both = "both";
 const maxPlayers = 6;
 const stateMap = {
 	waiting: 0,
@@ -99,7 +102,13 @@ class Game {
 
 			const currentPlayer = this.players.find((player) => player !== null && player.id === PlayerID);
 			if (currentPlayer !== undefined) {
-				currentPlayer.setNextMove(inputData);
+				console.log(inputData);
+				if (inputData.type === move || inputData.type === both) {
+					currentPlayer.setNextMove(inputData);
+				}
+				if (inputData.type === click || inputData.type === both) {
+					// create and shoot the bullet.
+				}
 			}
 		}
 

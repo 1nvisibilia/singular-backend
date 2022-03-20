@@ -1,7 +1,3 @@
-const up = "w";
-const down = "s";
-const left = "a";
-const right = "d";
 const moveSpeed = 3;
 
 class Player {
@@ -40,21 +36,21 @@ class Player {
 	 * @returns { void }
 	 */
 	setNextMove(inputData) {
-		if (inputData[up] === true && inputData[down] === true) {
+		if (inputData.up === true && inputData.down === true) {
 			this.nextY = 0;
-		} else if (inputData[up] === true) {
+		} else if (inputData.up === true) {
 			this.nextY = 0 - moveSpeed;
-		} else if (inputData[down] === true) {
+		} else if (inputData.down === true) {
 			this.nextY = moveSpeed;
 		} else {
 			this.nextY = 0;
 		}
 
-		if (inputData[left] === true && inputData[right] === true) {
+		if (inputData.left === true && inputData.right === true) {
 			this.nextX = 0;
-		} else if (inputData[left] === true) {
+		} else if (inputData.left === true) {
 			this.nextX = 0 - moveSpeed;
-		} else if (inputData[right] === true) {
+		} else if (inputData.right === true) {
 			this.nextX = moveSpeed;
 		} else {
 			this.nextX = 0;
