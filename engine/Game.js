@@ -1,4 +1,5 @@
 const Player = require("./Player");
+const Geometry = require("./Geometry");
 
 const move = "move";
 const click = "click";
@@ -101,14 +102,23 @@ class Game {
 			}
 
 			const currentPlayer = this.players.find((player) => player !== null && player.id === PlayerID);
-			if (currentPlayer !== undefined) {
-				console.log(inputData);
-				if (inputData.type === move || inputData.type === both) {
-					currentPlayer.setNextMove(inputData);
-				}
-				if (inputData.type === click || inputData.type === both) {
-					// create and shoot the bullet.
-				}
+			if (currentPlayer === undefined) {
+				continue;
+			}
+
+			if (inputData.type === move || inputData.type === both) {
+				currentPlayer.setNextMove(inputData);
+			}
+			console.log({ inputdata: inputData.type });
+			if (inputData.type === click || inputData.type === both) {
+				const angle = Geometry.twoPointsAngle(
+					currentPlayer.xCord,
+					currentPlayer.yCord,
+					inputData.mouse.xCord,
+					inputData.mouse.yCord
+				);
+				console.log("angle: " + angle);
+				// create and shoot the bullet.
 			}
 		}
 

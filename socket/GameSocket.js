@@ -50,9 +50,7 @@ class GameSocket {
 			});
 
 			socket.on(sendBackInput, (inputData) => {
-				if (inputData !== null) {
-					this.userInputs.set(socket.id, inputData);
-				}
+				this.userInputs.set(socket.id, inputData);
 			});
 		});
 	}
