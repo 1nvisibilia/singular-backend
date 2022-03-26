@@ -1,0 +1,15 @@
+{
+	"CanvasData": {
+		"width": 1000,
+		"height": 650
+	},
+	"BulletData": {
+		"radius": 10,
+		"moveSpeed": 5
+	},
+	"PlayerData": {
+		"radius": 30,
+		"moveSpeed": 3,
+		"shootingCoolDown": 400
+	}
+}

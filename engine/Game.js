@@ -1,5 +1,6 @@
-const Player = require("./Player");
+const Bullet = require("./Bullet")
 const Geometry = require("./Geometry");
+const Player = require("./Player");
 
 const move = "move";
 const click = "click";
@@ -31,6 +32,10 @@ class Game {
 	 */
 	players;
 	/**
+	 * @type { Bullet[] } bullets
+	 */
+	bullets;
+	/**
 	 * @type { Number } gameState
 	 */
 	gameState;
@@ -50,6 +55,7 @@ class Game {
 		this.spots.fill(true);
 		Object.seal(this.spots);
 		this.gameState = stateMap.waiting;
+		this.bullets = [];
 	}
 
 	/**
@@ -109,16 +115,22 @@ class Game {
 			if (inputData.type === move || inputData.type === both) {
 				currentPlayer.setNextMove(inputData);
 			}
-			console.log({ inputdata: inputData.type });
+
 			if (inputData.type === click || inputData.type === both) {
+				if (currentPlayer.shootingCooldown) {
+					continue;
+				}
+				currentPlayer.hasShot();
+
 				const angle = Geometry.twoPointsAngle(
 					currentPlayer.xCord,
 					currentPlayer.yCord,
 					inputData.mouse.xCord,
 					inputData.mouse.yCord
 				);
-				console.log("angle: " + angle);
-				// create and shoot the bullet.
+				const unitVector = Geometry.unitVector(angle);
+				// we want to change the init coordinate later on, not directly inside the player.
+				this.bullets.push(new Bullet(currentPlayer.xCord, currentPlayer.yCord, unitVector.x, unitVector.y));
 			}
 		}
 
@@ -128,6 +140,15 @@ class Game {
 				player.update();
 			}
 		});
+
+		// Change bullets moves while removing out of screen bullets
+		for (let i = this.bullets.length - 1; i >= 0; --i) {
+			if (this.bullets[i].outOfScope() === true) {
+				this.bullets.splice(i, 1);
+			} else {
+				this.bullets[i].update();
+			}
+		}
 	}
 }
 

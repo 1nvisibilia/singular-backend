@@ -1,4 +1,6 @@
-const moveSpeed = 3;
+const { PlayerData } = require("./EngineData.json");
+const coolDownTime = PlayerData.shootingCoolDown;
+const moveSpeed = PlayerData.moveSpeed;
 
 class Player {
 	/**
@@ -8,6 +10,7 @@ class Player {
 	 * @type { Number } nextX
 	 * @type { Number } nextY
 	 * @type { Number } health
+	 * @type { Boolean } shootingCooldown
 	 */
 	id;
 	xCord;
@@ -15,6 +18,7 @@ class Player {
 	nextX;
 	nextY;
 	health;
+	shootingCooldown;
 
 	/**
 	 * @param { String } id
@@ -29,6 +33,7 @@ class Player {
 		this.nextX = 0;
 		this.nextY = 0;
 		this.health = health;
+		this.shootingCooldown = false;
 	}
 
 	/**
@@ -63,6 +68,16 @@ class Player {
 	update() {
 		this.xCord += this.nextX;
 		this.yCord += this.nextY;
+	}
+
+	/**
+	 * @returns { void }
+	 */
+	hasShot() {
+		this.shootingCooldown = true;
+		setTimeout(() => {
+			this.shootingCooldown = false;
+		}, coolDownTime);
 	}
 }
 
