@@ -97,7 +97,7 @@ class GameSocket {
 	 */
 	activeEventLoop() {
 		if (this.eventLoop !== null) {
-			throw "already an event loop going on, something's not right...";
+			throw new Error("already an event loop going on, something's not right...");
 		}
 		this.eventLoop = setInterval(() => {
 			// update the game engine's status

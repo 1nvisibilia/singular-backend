@@ -5,6 +5,10 @@ class Bullet {
 	/**
 	 * @type { Number }
 	 */
+	static radius = BulletData.radius;
+	/**
+	 * @type { Number }
+	 */
 	xCord;
 
 	/**
@@ -23,6 +27,11 @@ class Bullet {
 	nextY;
 
 	/**
+	 * @type { Number }
+	 */
+	impact;
+
+	/**
 	 * @param { Number } xCord
 	 * @param { Number } yCord
 	 * @param { Number } nextX
@@ -33,6 +42,14 @@ class Bullet {
 		this.yCord = yCord;
 		this.nextX = nextX;
 		this.nextY = nextY;
+		this.impact = 0;
+	}
+
+	/**
+	 * @returns { Number } the radius of a Bullet entity
+	 */
+	get radius() {
+		return Bullet.radius;
 	}
 
 	/**

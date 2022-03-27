@@ -4,6 +4,10 @@ const moveSpeed = PlayerData.moveSpeed;
 
 class Player {
 	/**
+	 * @type { Number }
+	 */
+	static radius = PlayerData.radius;
+	/**
 	 * @type { Number } id
 	 * @type { Number } xCord
 	 * @type { Number } yCord
@@ -11,6 +15,7 @@ class Player {
 	 * @type { Number } nextY
 	 * @type { Number } health
 	 * @type { Boolean } shootingCooldown
+	 * @type { Number } impact
 	 */
 	id;
 	xCord;
@@ -19,6 +24,7 @@ class Player {
 	nextY;
 	health;
 	shootingCooldown;
+	impact;
 
 	/**
 	 * @param { String } id
@@ -33,7 +39,15 @@ class Player {
 		this.nextX = 0;
 		this.nextY = 0;
 		this.health = health;
+		this.impact = 0;
 		this.shootingCooldown = false;
+	}
+
+	/**
+	 * @returns { Number } the radius of a Player entity
+	 */
+	get radius() {
+		return Player.radius;
 	}
 
 	/**

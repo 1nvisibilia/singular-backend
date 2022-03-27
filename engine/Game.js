@@ -98,6 +98,86 @@ class Game {
 	}
 
 	/**
+	 * @param { Player | Bullet } entity1
+	 * @param { Player | Bullet } entity2
+	 * @returns { void }
+	 */
+	updateCollision(entity1, entity2) {
+		const distance = Geometry.twoPointsDistance(
+			entity1.xCord,
+			entity1.yCord,
+			entity2.xCord,
+			entity2.yCord
+		);
+
+		if (distance < entity1.radius + entity2.radius) {
+			++entity1.impact;
+			++entity2.impact;
+		}
+	}
+
+	/**
+	 * Check if there are any collisions among all entities, and update entities based on
+	 * their collisions
+	 * @returns { void }
+	 */
+	checkCollision() {
+		// Bullet/Bullet Collision
+		for (let i = 0; i < this.bullets.length; ++i) {
+			if (this.bullets[i].impact > 0) {
+				continue;
+			}
+			for (let j = i + 1; j < this.bullets.length; ++j) {
+				if (this.bullets[j].impact > 0) {
+					continue;
+				}
+				this.updateCollision(this.bullets[i], this.bullets[j]);
+			}
+		}
+
+		// Bullet/Player Collision
+		for (let i = 0; i < this.players.length; ++i) {
+			if (this.players[i] === null) {
+				continue;
+			}
+			for (let j = 0; j < this.bullets.length; ++j) {
+				if (this.bullets[j].impact > 0) {
+					continue;
+				}
+				this.updateCollision(this.players[i], this.bullets[j]);
+			}
+		}
+
+		// Player/Player Collision
+		for (let i = 0; i < this.players.length; ++i) {
+			if (this.players[i] === null) {
+				continue;
+			}
+			for (let j = i + 1; j < this.players.length; ++j) {
+				if (this.players[j] === null) {
+					continue;
+				}
+				this.updateCollision(this.players[i], this.players[j]);
+			}
+		}
+
+		// Remove all collided bullets.
+		for (let i = this.bullets.length - 1; i >= 0; --i) {
+			if (this.bullets[i].impact > 0) {
+				this.bullets.splice(i, 1);
+			}
+		}
+
+		// Update Players Health
+		this.players.forEach((player) => {
+			if (player !== null && player.impact !== 0) {
+				player.health -= player.impact;
+				player.impact = 0;
+			}
+		});
+	}
+
+	/**
 	 * @param { Map } InputMap
 	 */
 	updateEntities(InputMap) {
@@ -128,9 +208,13 @@ class Game {
 					inputData.mouse.xCord,
 					inputData.mouse.yCord
 				);
+
 				const unitVector = Geometry.unitVector(angle);
-				// we want to change the init coordinate later on, not directly inside the player.
-				this.bullets.push(new Bullet(currentPlayer.xCord, currentPlayer.yCord, unitVector.x, unitVector.y));
+				this.bullets.push(new Bullet(
+					currentPlayer.xCord + (Player.radius + Bullet.radius) * unitVector.x,
+					currentPlayer.yCord + (Player.radius + Bullet.radius) * unitVector.y,
+					unitVector.x,
+					unitVector.y));
 			}
 		}
 
@@ -149,6 +233,9 @@ class Game {
 				this.bullets[i].update();
 			}
 		}
+
+		// Checking for collisions
+		this.checkCollision();
 	}
 }
 
