@@ -23,11 +23,6 @@ const initialPositions = [
 
 class Game {
 	/**
-	 * @typedef { { players: Player[], gameState: Number } } Game
-	 * @typedef { { health: Number } } Attribute
-	 */
-
-	/**
 	 * @type { Player[] } players
 	 */
 	players;
@@ -60,10 +55,9 @@ class Game {
 
 	/**
 	 * @param { Number } newPlayerID
-	 * @param { Attribute } attributes
 	 * @returns { Player } : the player added or null if unsuccessful
 	 */
-	addPlayer(newPlayerID, attributes) {
+	addPlayer(newPlayerID) {
 		const index = this.spots.findIndex(spot => spot);
 		if (index === -1) {
 			return null;
@@ -72,7 +66,7 @@ class Game {
 		const position = initialPositions[index];
 		this.spots[index] = false;
 
-		const newPlayer = new Player(newPlayerID, position[0], position[1], attributes.health);
+		const newPlayer = new Player(newPlayerID, position[0], position[1]);
 		this.players[index] = newPlayer;
 
 		// if (this.players.length === maxPlayers) {

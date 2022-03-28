@@ -38,7 +38,7 @@ class Player {
 		this.yCord = yCord;
 		this.nextX = 0;
 		this.nextY = 0;
-		this.health = health;
+		this.health = PlayerData.initHealth;
 		this.impact = 0;
 		this.shootingCooldown = false;
 	}

@@ -61,7 +61,7 @@ class GameSocket {
 	onConnect(socket) {
 		console.log("a user connected", socket.id);
 
-		const newPlayer = this.game.addPlayer(socket.id, { health: 10 }); // we will check if room is full/ returns null.
+		const newPlayer = this.game.addPlayer(socket.id); // we will check if room is full/ returns null.
 
 		socket.emit(currentGameStatus, this.game);
 
