@@ -12,7 +12,6 @@ const updateFrequency = 25; // does this affect the front-end animation frame? w
 class GameSocket {
 	/**
 	 * @type { Game }
-	 * will expand this into multiple games later on...
 	 */
 	game;
 	/**
@@ -49,6 +48,7 @@ class GameSocket {
 				this.onDisconnect(socket.id);
 			});
 
+			// also need to add this after joining rooms
 			socket.on(sendBackInput, (inputData) => {
 				this.userInputs.set(socket.id, inputData);
 			});
@@ -58,7 +58,7 @@ class GameSocket {
 	/**
 	 * @param { Socket } socket
 	 */
-	onConnect(socket) {
+	onConnect(socket) { //////////////// will be called onJoin
 		console.log("a user connected", socket.id);
 
 		const newPlayer = this.game.addPlayer(socket.id); // we will check if room is full/ returns null.
@@ -76,9 +76,9 @@ class GameSocket {
 	/**
 	 * @param { Number } socketID
 	 */
-	onDisconnect(socketID) {
-		this.game.removePlayer(socketID);
-		this.io.emit(aPlayerLeft, this.game);
+	onDisconnect(socketID) { // will be called leaveRoom
+		this.game.removePlayer(socketID); // this will stay here
+		this.io.emit(aPlayerLeft, this.game); // this will be in the gamesocketManager class
 	}
 
 	/**

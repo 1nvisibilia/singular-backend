@@ -1,13 +1,17 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/api/sup", (req, res) => {
-	res.send("lmfao");
-});
+const GameServerInitializer = require("./socket/GameServer");
 
-router.get("/", (req, res) => {
-	res.send("sup");
-});
+function routeInitializer(applicationData) {
+	// Handle all game socket related APIs.
+	router.use("/game", GameServerInitializer(applicationData.server));
 
+	router.get("/", (req, res) => {
+		res.send("sup");
+	});
 
-module.exports = router;
+	return router;
+}
+
+module.exports = routeInitializer;
