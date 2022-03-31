@@ -6,7 +6,7 @@ const move = "move";
 const click = "click";
 const both = "both";
 const maxPlayers = 6;
-const stateMap = {
+const stateMap = { // do we need this?
 	waiting: 0,
 	ready: 1,
 	ingame: 2,
@@ -43,9 +43,7 @@ class Game {
 	 * @param { void }
 	 */
 	constructor() {
-		this.players = new Array(maxPlayers);
-		this.players.fill(null);
-		Object.seal(this.players);
+		this.players = [];
 		this.spots = new Array(maxPlayers);
 		this.spots.fill(true);
 		Object.seal(this.spots);
@@ -55,19 +53,19 @@ class Game {
 
 	/**
 	 * @param { Number } newPlayerID
-	 * @returns { Player } : the player added or null if unsuccessful
+	 * @returns { Player } the player added or null if unsuccessful
 	 */
 	addPlayer(newPlayerID) {
-		const index = this.spots.findIndex(spot => spot);
-		if (index === -1) {
+		if (this.players.length === maxPlayers) {
 			return null;
 		}
 
+		const index = this.spots.findIndex(spot => spot);
 		const position = initialPositions[index];
 		this.spots[index] = false;
 
 		const newPlayer = new Player(newPlayerID, position[0], position[1]);
-		this.players[index] = newPlayer;
+		this.players.push(newPlayer);
 
 		// if (this.players.length === maxPlayers) {
 		// 	this.gameState = stateMap.ready;
@@ -82,9 +80,9 @@ class Game {
 	 * @returns { Boolean } : if removal is successful
 	 */
 	removePlayer(playerID) {
-		const disconnectedUserIndex = this.players.findIndex(player => player && player.id === playerID);
+		const disconnectedUserIndex = this.players.findIndex(player => player.id === playerID);
 		if (disconnectedUserIndex !== -1) {
-			this.players[disconnectedUserIndex] = null;
+			this.players.splice(disconnectedUserIndex, 1);
 			this.spots[disconnectedUserIndex] = true;
 			return true;
 		}
@@ -131,9 +129,6 @@ class Game {
 
 		// Bullet/Player Collision
 		for (let i = 0; i < this.players.length; ++i) {
-			if (this.players[i] === null) {
-				continue;
-			}
 			for (let j = 0; j < this.bullets.length; ++j) {
 				if (this.bullets[j].impact > 0) {
 					continue;
@@ -144,13 +139,7 @@ class Game {
 
 		// Player/Player Collision
 		for (let i = 0; i < this.players.length; ++i) {
-			if (this.players[i] === null) {
-				continue;
-			}
 			for (let j = i + 1; j < this.players.length; ++j) {
-				if (this.players[j] === null) {
-					continue;
-				}
 				this.updateCollision(this.players[i], this.players[j]);
 			}
 		}
@@ -164,7 +153,7 @@ class Game {
 
 		// Update Players Health
 		this.players.forEach((player) => {
-			if (player !== null && player.impact !== 0) {
+			if (player.impact !== 0) {
 				player.health -= player.impact;
 				player.impact = 0;
 			}
@@ -181,7 +170,7 @@ class Game {
 				continue;
 			}
 
-			const currentPlayer = this.players.find((player) => player !== null && player.id === PlayerID);
+			const currentPlayer = this.players.find((player) => player.id === PlayerID);
 			if (currentPlayer === undefined) {
 				continue;
 			}
@@ -214,9 +203,7 @@ class Game {
 
 		// Change players moves
 		this.players.forEach((player) => {
-			if (player !== null) {
-				player.update();
-			}
+			player.update();
 		});
 
 		// Change bullets moves while removing out of screen bullets

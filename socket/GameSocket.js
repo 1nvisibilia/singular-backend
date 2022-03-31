@@ -49,18 +49,21 @@ class GameSocket {
 	onJoin(socket) {
 		console.log("a user connected", socket.id);
 
-		const newPlayer = this.game.addPlayer(socket.id); // we will check if room is full/ returns null.
+		const newPlayer = this.game.addPlayer(socket.id);
+		if (newPlayer === null) {
+			throw new Error("adding player failed, check the log");
+		}
 
 		socket.emit(currentGameStatus, this.game);
 
 		const currentPlayers = this.game.players;
+		// update all other players of the new player joined
 		currentPlayers.forEach((currentPlayer) => {
-			if (currentPlayer && currentPlayer.id !== newPlayer.id) {
+			if (currentPlayer.id !== newPlayer.id) {
 				this.io.to(currentPlayer.id).emit(aPlayerJoined, newPlayer);
 			}
 		});
 
-		// also need to add this after joining rooms
 		// setup the receiver for user inputs
 		socket.on(sendBackInput, (inputData) => {
 			this.userInputs.set(socket.id, inputData);
@@ -74,9 +77,9 @@ class GameSocket {
 	/**
 	 * @param { Number } socketID
 	 */
-	onLeave(socketID) { // will be called leaveRoom
-		this.game.removePlayer(socketID); // this will stay here
-		this.io.emit(aPlayerLeft, this.game); // this will be in the gamesocketManager class
+	onLeave(socketID) {
+		this.game.removePlayer(socketID);
+		this.io.emit(aPlayerLeft, this.game);
 	}
 
 	/**
@@ -84,9 +87,7 @@ class GameSocket {
 	 */
 	requestUserInputs() {
 		this.game.players.forEach((currentPlayer) => {
-			if (currentPlayer !== null) {
-				this.io.to(currentPlayer.id).emit(requestInput);
-			}
+			this.io.to(currentPlayer.id).emit(requestInput);
 		});
 	}
 
@@ -103,9 +104,7 @@ class GameSocket {
 
 			// emit game data back to players
 			this.game.players.forEach((player) => {
-				if (player !== null) {
-					this.io.to(player.id).emit(sendGameData, this.game);
-				}
+				this.io.to(player.id).emit(sendGameData, this.game);
 			});
 
 			// request user input

@@ -47,6 +47,7 @@ class GameSocketManager {
 			this.connections[socket.id] = noRoom;
 			socket.on("disconnect", () => {
 				const roomID = this.connections[socket.id];
+				// If the client is already in a game room, leave that room.
 				if (roomID !== noRoom) {
 					this.gameServers[roomID].onLeave(socket.id);
 				}
@@ -94,7 +95,7 @@ class GameSocketManager {
 				errorMessage: "The room you are trying to join does not exist. Please double check you code."
 			};
 		} else if (false) {
-			// check if the room is full
+			// check if the room is full, get a static variable in GameSocket
 			// return { avaliable: false, ... }
 		}
 
