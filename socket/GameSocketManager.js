@@ -48,7 +48,7 @@ class GameSocketManager {
 			socket.on("disconnect", () => {
 				const roomID = this.connections[socket.id];
 				if (roomID !== noRoom) {
-					this.gameServers[roomID].onDisconnect(socket.id);
+					this.gameServers[roomID].onLeave(socket.id);
 				}
 			});
 
@@ -59,7 +59,7 @@ class GameSocketManager {
 				}
 
 				// update the game and the current players.
-				game.onConnect(socket);
+				game.onJoin(socket);
 			});
 
 			socket.on(leaveRoom, (roomID) => {
@@ -68,7 +68,7 @@ class GameSocketManager {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}
 
-				game.onDisconnect(socket.id);
+				game.onLeave(socket.id);
 			});
 		});
 	}

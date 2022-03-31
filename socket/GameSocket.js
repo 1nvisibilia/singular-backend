@@ -41,24 +41,12 @@ class GameSocket {
 		this.userInputs = new Map();
 		this.id = roomID;
 		this.io = io;
-
-		// this.io.on("connection", (socket) => {
-		// 	this.onConnect(socket);
-		// 	socket.on("disconnect", () => {
-		// 		this.onDisconnect(socket.id);
-		// 	});
-
-		// 	// also need to add this after joining rooms
-		// 	socket.on(sendBackInput, (inputData) => {
-		// 		this.userInputs.set(socket.id, inputData);
-		// 	});
-		// });
 	}
 
 	/**
 	 * @param { Socket } socket
 	 */
-	onConnect(socket) { //////////////// will be called onJoin
+	onJoin(socket) {
 		console.log("a user connected", socket.id);
 
 		const newPlayer = this.game.addPlayer(socket.id); // we will check if room is full/ returns null.
@@ -86,7 +74,7 @@ class GameSocket {
 	/**
 	 * @param { Number } socketID
 	 */
-	onDisconnect(socketID) { // will be called leaveRoom
+	onLeave(socketID) { // will be called leaveRoom
 		this.game.removePlayer(socketID); // this will stay here
 		this.io.emit(aPlayerLeft, this.game); // this will be in the gamesocketManager class
 	}
