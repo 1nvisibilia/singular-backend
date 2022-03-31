@@ -32,7 +32,7 @@ class Player {
 	 * @param { Number } yCord
 	 * @param { Number } health
 	**/
-	constructor(id, xCord, yCord, health) {
+	constructor(id, xCord, yCord) {
 		this.id = id;
 		this.xCord = xCord;
 		this.yCord = yCord;

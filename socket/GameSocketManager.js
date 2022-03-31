@@ -61,15 +61,20 @@ class GameSocketManager {
 
 				// update the gameSocket and the current players.
 				gameSocket.onJoin(socket);
+				// update the connection map object
+				this.connections[socket.id] = gameSocket.id;
 			});
 
 			socket.on(leaveRoom, (roomID) => {
-				const gameSocket = gameServers[roomID];
+				const gameSocket = this.gameServers[roomID];
 				if (gameSocket === undefined) {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}
 
+				// update the gameSocket and the current players.
 				gameSocket.onLeave(socket.id);
+				// update the connection map object
+				this.connections[socket.id] = noRoom;
 			});
 		});
 	}
@@ -100,8 +105,6 @@ class GameSocketManager {
 				errorMessage: "The room you are trying to join is already full."
 			};
 		}
-
-		this.connections[socket.id] = gameSocket.id;
 
 		return {
 			available: true,
