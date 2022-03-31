@@ -1,9 +1,10 @@
 const uuid = require("uuid");
 const GameSocket = require("./GameSocket.js");
 const { Server: SocketServer } = require("socket.io");
-const Game = require("../engine/Game.js");
 
 const noRoom = "noRoom";
+const joinRoom = "join room";
+const leaveRoom = "leave room";
 
 class GameSocketManager {
 	/**
@@ -28,9 +29,8 @@ class GameSocketManager {
 	connections;
 
 	/**
-	 * 
-	 * @param { http.Server } server 
-	 * @param { String } frontEndURL 
+	 * @param { http.Server } server
+	 * @param { String } frontEndURL
 	 */
 	constructor(server, frontEndURL) {
 		this.httpServer = server;
@@ -46,7 +46,29 @@ class GameSocketManager {
 		this.io.on("connection", (socket) => {
 			this.connections[socket.id] = noRoom;
 			socket.on("disconnect", () => {
-				this.onDisconnect(socket.id);
+				const roomID = this.connections[socket.id];
+				if (roomID !== noRoom) {
+					this.gameServers[roomID].onDisconnect(socket.id);
+				}
+			});
+
+			socket.on(joinRoom, (roomID) => {
+				const game = this.gameServers[roomID];
+				if (game === undefined) {
+					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
+				}
+
+				// update the game and the current players.
+				game.onConnect(socket);
+			});
+
+			socket.on(leaveRoom, (roomID) => {
+				const game = gameServers[roomID];
+				if (game === undefined) {
+					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
+				}
+
+				game.onDisconnect(socket.id);
 			});
 		});
 	}
@@ -55,16 +77,34 @@ class GameSocketManager {
 	 * @returns { String } the room ID
 	 */
 	createGameRoom() {
-		gameServers[uuid.v4()] = new GameSocket();
+		const roomID = uuid.v4();
+		this.gameServers[roomID] = new GameSocket(this.io, roomID);
+		return roomID;
+	}
+
+	/**
+	 * @returns { { available : Boolean, errorMessage: String } }
+	 */
+	canJoinGameRoom(roomID) {
+		const game = this.gameServers[roomID];
+
+		if (game === undefined) {
+			return {
+				available: false,
+				errorMessage: "The room you are trying to join does not exist. Please double check you code."
+			};
+		} else if (false) {
+			// check if the room is full
+			// return { avaliable: false, ... }
+		}
+
+		this.connections[socket.id] = game.id;
+
+		return {
+			available: true,
+			errorMessage: undefined
+		};
 	}
 }
 
-const SocketSetup = {
-	setup: function _setup(server, frontEndURL) {
-		const gameSocket = new GameSocket(server, frontEndURL);
-		gameSocket.activeEventLoop();
-		return gameSocket;
-	}
-};
-
-module.exports = SocketSetup;
+module.exports = GameSocketManager;

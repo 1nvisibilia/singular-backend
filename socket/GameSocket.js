@@ -26,33 +26,33 @@ class GameSocket {
 	 * @type { Map }
 	 */
 	userInputs;
+	/**
+	 * @type { String } id
+	 */
+	id;
 
 	/**
-	 * @param { http.Server } server
-	 * @param { String } frontEndURL
+	 * @param { SocketServer } io
+	 * @param { String } roomID
 	 */
-	constructor(server, frontEndURL) {
+	constructor(io, roomID) {
 		this.game = new Game();
 		this.eventLoop = null;
 		this.userInputs = new Map();
+		this.id = roomID;
+		this.io = io;
 
-		this.io = new SocketServer(server, {
-			cors: {
-				origin: frontEndURL
-			}
-		});
+		// this.io.on("connection", (socket) => {
+		// 	this.onConnect(socket);
+		// 	socket.on("disconnect", () => {
+		// 		this.onDisconnect(socket.id);
+		// 	});
 
-		this.io.on("connection", (socket) => {
-			this.onConnect(socket);
-			socket.on("disconnect", () => {
-				this.onDisconnect(socket.id);
-			});
-
-			// also need to add this after joining rooms
-			socket.on(sendBackInput, (inputData) => {
-				this.userInputs.set(socket.id, inputData);
-			});
-		});
+		// 	// also need to add this after joining rooms
+		// 	socket.on(sendBackInput, (inputData) => {
+		// 		this.userInputs.set(socket.id, inputData);
+		// 	});
+		// });
 	}
 
 	/**
@@ -71,6 +71,16 @@ class GameSocket {
 				this.io.to(currentPlayer.id).emit(aPlayerJoined, newPlayer);
 			}
 		});
+
+		// also need to add this after joining rooms
+		// setup the receiver for user inputs
+		socket.on(sendBackInput, (inputData) => {
+			this.userInputs.set(socket.id, inputData);
+		});
+
+		if (this.eventLoop === null) {
+			this.activeEventLoop();
+		}
 	}
 
 	/**
