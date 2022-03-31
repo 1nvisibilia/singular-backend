@@ -54,22 +54,22 @@ class GameSocketManager {
 			});
 
 			socket.on(joinRoom, (roomID) => {
-				const game = this.gameServers[roomID];
-				if (game === undefined) {
+				const gameSocket = this.gameServers[roomID];
+				if (gameSocket === undefined) {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}
 
-				// update the game and the current players.
-				game.onJoin(socket);
+				// update the gameSocket and the current players.
+				gameSocket.onJoin(socket);
 			});
 
 			socket.on(leaveRoom, (roomID) => {
-				const game = gameServers[roomID];
-				if (game === undefined) {
+				const gameSocket = gameServers[roomID];
+				if (gameSocket === undefined) {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}
 
-				game.onLeave(socket.id);
+				gameSocket.onLeave(socket.id);
 			});
 		});
 	}
@@ -87,19 +87,21 @@ class GameSocketManager {
 	 * @returns { { available : Boolean, errorMessage: String } }
 	 */
 	canJoinGameRoom(roomID) {
-		const game = this.gameServers[roomID];
+		const gameSocket = this.gameServers[roomID];
 
-		if (game === undefined) {
+		if (gameSocket === undefined) {
 			return {
 				available: false,
 				errorMessage: "The room you are trying to join does not exist. Please double check you code."
 			};
-		} else if (false) {
-			// check if the room is full, get a static variable in GameSocket
-			// return { avaliable: false, ... }
+		} else if (gameSocket.game.isFull()) {
+			return {
+				available: false,
+				errorMessage: "The room you are trying to join is already full."
+			};
 		}
 
-		this.connections[socket.id] = game.id;
+		this.connections[socket.id] = gameSocket.id;
 
 		return {
 			available: true,

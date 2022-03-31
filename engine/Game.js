@@ -52,11 +52,18 @@ class Game {
 	}
 
 	/**
+	 * @returns { Boolean } if the game is full
+	 */
+	isFull() {
+		return this.players.length === maxPlayers;
+	}
+
+	/**
 	 * @param { Number } newPlayerID
 	 * @returns { Player } the player added or null if unsuccessful
 	 */
 	addPlayer(newPlayerID) {
-		if (this.players.length === maxPlayers) {
+		if (this.isFull()) {
 			return null;
 		}
 
