@@ -45,11 +45,18 @@ class GameSocketManager {
 			socket.on("disconnect", () => {
 				const roomID = this.connections.get(socket.id);
 				// If the client is already in a game room, leave that room.
-				if (roomID !== noRoom) {
-					this.gameServers.get(roomID).onLeave(socket.id);
+				if (roomID !== noRoom && typeof roomID === "string") {
+					const gameSocket = this.gameServers.get(roomID);
+					gameSocket.onLeave(socket.id);
+
+					// if the room is empty after the client left, delete the room
+					if (gameSocket.empty() === true) {
+						this.gameServers.delete(roomID);
+					}
 				}
 				this.connections.delete(socket.id);
 				console.log(this.connections);
+				console.log([...this.gameServers.keys()]);
 			});
 
 			socket.on(joinRoom, (roomID) => {
@@ -63,6 +70,7 @@ class GameSocketManager {
 				// update the connection map
 				this.connections.set(socket.id, gameSocket.roomID);
 				console.log(this.connections);
+				console.log([...this.gameServers.keys()]);
 			});
 
 			socket.on(leaveRoom, (roomID) => {

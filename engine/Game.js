@@ -59,6 +59,13 @@ class Game {
 	}
 
 	/**
+	 * @returns { Boolean } if there are no players in the game
+	 */
+	isEmpty() {
+		return this.players.length === 0;
+	}
+
+	/**
 	 * @param { Number } newPlayerID
 	 * @returns { Player } the player added or null if unsuccessful
 	 */

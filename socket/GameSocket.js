@@ -110,6 +110,13 @@ class GameSocket {
 		clearInterval(this.eventLoop);
 		this.eventLoop = null;
 	}
+
+	/**
+	 * @returns { Boolean } if the room has no players
+	 */
+	empty() {
+		return this.game.isEmpty();
+	}
 }
 
 module.exports = GameSocket;
