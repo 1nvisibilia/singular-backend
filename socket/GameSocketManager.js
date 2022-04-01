@@ -20,9 +20,7 @@ class GameSocketManager {
 	 */
 	io;
 	/**
-	 * @type { Object }
-	 * @key socketID: String
-	 * @value roomID: String | noRoom
+	 * @type { Map<String, String> }
 	 */
 	connections;
 
@@ -33,7 +31,7 @@ class GameSocketManager {
 	constructor(server, frontEndURL) {
 		this.httpServer = server;
 		this.gameServers = new Map();
-		this.connections = {};
+		this.connections = new Map();
 		this.io = new SocketServer(server, {
 			cors: {
 				origin: frontEndURL
@@ -42,15 +40,15 @@ class GameSocketManager {
 
 		// Setup basic connections
 		this.io.on("connection", (socket) => {
-			this.connections[socket.id] = noRoom;
+			this.connections.set(socket.id, noRoom);
 			console.log(this.connections);
 			socket.on("disconnect", () => {
-				const roomID = this.connections[socket.id];
+				const roomID = this.connections.get(socket.id);
 				// If the client is already in a game room, leave that room.
 				if (roomID !== noRoom) {
 					this.gameServers.get(roomID).onLeave(socket.id);
 				}
-				delete this.connections[socket.id];
+				this.connections.delete(socket.id);
 				console.log(this.connections);
 			});
 
@@ -62,8 +60,8 @@ class GameSocketManager {
 
 				// update the gameSocket and the current players.
 				gameSocket.onJoin(socket);
-				// update the connection map object
-				this.connections[socket.id] = gameSocket.roomID;
+				// update the connection map
+				this.connections.set(socket.id, gameSocket.roomID);
 				console.log(this.connections);
 			});
 
@@ -76,7 +74,7 @@ class GameSocketManager {
 				// update the gameSocket and the current players.
 				gameSocket.onLeave(socket.id);
 				// update the connection map object
-				this.connections[socket.id] = noRoom;
+				this.connections.set(socket.id, noRoom);
 				console.log(this.connections);
 			});
 		});
