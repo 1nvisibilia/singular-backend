@@ -43,12 +43,15 @@ class GameSocketManager {
 		// Setup basic connections
 		this.io.on("connection", (socket) => {
 			this.connections[socket.id] = noRoom;
+			console.log(this.connections);
 			socket.on("disconnect", () => {
 				const roomID = this.connections[socket.id];
 				// If the client is already in a game room, leave that room.
 				if (roomID !== noRoom) {
 					this.gameServers.get(roomID).onLeave(socket.id);
 				}
+				delete this.connections[socket.id];
+				console.log(this.connections);
 			});
 
 			socket.on(joinRoom, (roomID) => {
@@ -60,7 +63,8 @@ class GameSocketManager {
 				// update the gameSocket and the current players.
 				gameSocket.onJoin(socket);
 				// update the connection map object
-				this.connections[socket.id] = gameSocket.id;
+				this.connections[socket.id] = gameSocket.roomID;
+				console.log(this.connections);
 			});
 
 			socket.on(leaveRoom, (roomID) => {
@@ -73,6 +77,7 @@ class GameSocketManager {
 				gameSocket.onLeave(socket.id);
 				// update the connection map object
 				this.connections[socket.id] = noRoom;
+				console.log(this.connections);
 			});
 		});
 	}

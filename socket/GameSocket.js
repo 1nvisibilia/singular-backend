@@ -23,13 +23,13 @@ class GameSocket {
 	 */
 	eventLoop;
 	/**
-	 * @type { Map }
+	 * @type { Map } userInputs
 	 */
 	userInputs;
 	/**
-	 * @type { String } id
+	 * @type { String } roomID
 	 */
-	id;
+	roomID;
 
 	/**
 	 * @param { SocketServer } io
@@ -39,7 +39,7 @@ class GameSocket {
 		this.game = new Game();
 		this.eventLoop = null;
 		this.userInputs = new Map();
-		this.id = roomID;
+		this.roomID = roomID;
 		this.io = io;
 	}
 
@@ -47,8 +47,7 @@ class GameSocket {
 	 * @param { Socket } socket
 	 */
 	onJoin(socket) {
-		console.log(socket.id + " joining room: " + this.id);
-		socket.join(this.id);
+		socket.join(this.roomID);
 
 		const newPlayer = this.game.addPlayer(socket.id);
 		if (newPlayer === null) {
@@ -57,13 +56,8 @@ class GameSocket {
 
 		socket.emit(currentGameStatus, this.game);
 
-		const currentPlayers = this.game.players;
 		// update all other players of the new player joined
-		currentPlayers.forEach((currentPlayer) => {
-			if (currentPlayer.id !== newPlayer.id) {
-				this.io.to(currentPlayer.id).emit(aPlayerJoined, newPlayer);
-			}
-		});
+		socket.to(this.roomID).emit(aPlayerJoined, newPlayer);
 
 		// setup the receiver for user inputs
 		socket.on(sendBackInput, (inputData) => {
@@ -80,16 +74,14 @@ class GameSocket {
 	 */
 	onLeave(socketID) {
 		this.game.removePlayer(socketID);
-		this.io.emit(aPlayerLeft, this.game);
+		this.io.to(this.roomID).emit(aPlayerLeft, this.game);
 	}
 
 	/**
 	 * @returns  { void }
 	 */
 	requestUserInputs() {
-		this.game.players.forEach((currentPlayer) => {
-			this.io.to(currentPlayer.id).emit(requestInput);
-		});
+		this.io.to(this.roomID).emit(requestInput);
 	}
 
 	/**
@@ -104,9 +96,7 @@ class GameSocket {
 			this.game.updateEntities(this.userInputs);
 
 			// emit game data back to players
-			this.game.players.forEach((player) => {
-				this.io.to(player.id).emit(sendGameData, this.game);
-			});
+			this.io.to(this.roomID).emit(sendGameData, this.game);
 
 			// request user input
 			this.requestUserInputs();
