@@ -47,7 +47,8 @@ class GameSocket {
 	 * @param { Socket } socket
 	 */
 	onJoin(socket) {
-		console.log("a user connected", socket.id);
+		console.log(socket.id + " joining room: " + this.id);
+		socket.join(this.id);
 
 		const newPlayer = this.game.addPlayer(socket.id);
 		if (newPlayer === null) {

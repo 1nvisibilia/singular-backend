@@ -11,13 +11,20 @@ function GameServerInitializer(server) {
 
 	// Creating a new socket game room
 	GameServer.post("/create", (req, res) => {
+		res.status(201);
 		res.send(gameSocketManager.createGameRoom());
 	});
 
 	// Joining an existing socket game room
-	GameServer.post("/join", (req, res) => {
+	GameServer.post("/join/:roomID", (req, res) => {
 		const roomID = req.params.roomID;
-		res.json(gameSocketManager.canJoinGameRoom(roomID));
+		const result = gameSocketManager.canJoinGameRoom(roomID);
+		if (result.available === true) {
+			res.status(202);
+		} else {
+			res.status(200);
+		}
+		res.json(result);
 	});
 	return GameServer;
 }

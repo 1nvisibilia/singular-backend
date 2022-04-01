@@ -1,4 +1,4 @@
-const uuid = require("uuid");
+const secureRandomString = require("secure-random-string");
 const GameSocket = require("./GameSocket.js");
 const { Server: SocketServer } = require("socket.io");
 
@@ -12,9 +12,7 @@ class GameSocketManager {
 	 */
 	httpServer;
 	/**
-	 * @type { Object } gameServers
-	 * @key roomID: String
-	 * @value gameSocket: GameSocket
+	 * @type { Map<String, GameSocket> }
 	 */
 	gameServers;
 	/**
@@ -34,7 +32,7 @@ class GameSocketManager {
 	 */
 	constructor(server, frontEndURL) {
 		this.httpServer = server;
-		this.gameServers = {};
+		this.gameServers = new Map();
 		this.connections = {};
 		this.io = new SocketServer(server, {
 			cors: {
@@ -49,12 +47,12 @@ class GameSocketManager {
 				const roomID = this.connections[socket.id];
 				// If the client is already in a game room, leave that room.
 				if (roomID !== noRoom) {
-					this.gameServers[roomID].onLeave(socket.id);
+					this.gameServers.get(roomID).onLeave(socket.id);
 				}
 			});
 
 			socket.on(joinRoom, (roomID) => {
-				const gameSocket = this.gameServers[roomID];
+				const gameSocket = this.gameServers.get(roomID);
 				if (gameSocket === undefined) {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}
@@ -66,7 +64,7 @@ class GameSocketManager {
 			});
 
 			socket.on(leaveRoom, (roomID) => {
-				const gameSocket = this.gameServers[roomID];
+				const gameSocket = this.gameServers.get(roomID);
 				if (gameSocket === undefined) {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}
@@ -83,8 +81,11 @@ class GameSocketManager {
 	 * @returns { String } the room ID
 	 */
 	createGameRoom() {
-		const roomID = uuid.v4();
-		this.gameServers[roomID] = new GameSocket(this.io, roomID);
+		const roomID = secureRandomString({
+			alphanumeric: true,
+			length: 8
+		});
+		this.gameServers.set(roomID, new GameSocket(this.io, roomID));
 		return roomID;
 	}
 
@@ -92,7 +93,7 @@ class GameSocketManager {
 	 * @returns { { available : Boolean, errorMessage: String } }
 	 */
 	canJoinGameRoom(roomID) {
-		const gameSocket = this.gameServers[roomID];
+		const gameSocket = this.gameServers.get(roomID);
 
 		if (gameSocket === undefined) {
 			return {
