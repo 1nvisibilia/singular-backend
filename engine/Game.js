@@ -66,10 +66,25 @@ class Game {
 	}
 
 	/**
-	 * @param { Number } newPlayerID
+	 * @param { String } newName
+	 * @returns { Boolean } true if this name already exist in the game, false otherwise
+	 */
+	nameExist(newName) {
+		const exist = this.players.find((player) => {
+			return player.name === newName;
+		})
+		if (exist === undefined) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param { String } newPlayerID
+	 * @param { String } playerName
 	 * @returns { Player } the player added or null if unsuccessful
 	 */
-	addPlayer(newPlayerID) {
+	addPlayer(newPlayerID, playerName) {
 		if (this.isFull()) {
 			return null;
 		}
@@ -78,7 +93,7 @@ class Game {
 		const position = initialPositions[index];
 		this.spots[index] = false;
 
-		const newPlayer = new Player(newPlayerID, position[0], position[1]);
+		const newPlayer = new Player(newPlayerID, playerName, position[0], position[1]);
 		this.players.push(newPlayer);
 
 		// if (this.players.length === maxPlayers) {

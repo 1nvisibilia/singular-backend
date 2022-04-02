@@ -59,14 +59,14 @@ class GameSocketManager {
 				console.log([...this.gameServers.keys()]);
 			});
 
-			socket.on(joinRoom, (roomID) => {
-				const gameSocket = this.gameServers.get(roomID);
+			socket.on(joinRoom, (gameInfo) => {
+				const gameSocket = this.gameServers.get(gameInfo.roomID);
 				if (gameSocket === undefined) {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}
 
 				// update the gameSocket and the current players.
-				gameSocket.onJoin(socket);
+				gameSocket.onJoin(socket, gameInfo.playerName);
 				// update the connection map
 				this.connections.set(socket.id, gameSocket.roomID);
 				console.log(this.connections);
@@ -107,9 +107,11 @@ class GameSocketManager {
 	}
 
 	/**
+	 * @param { String } roomID
+	 * @param { String } playerName
 	 * @returns { { available : Boolean, errorMessage: String } }
 	 */
-	canJoinGameRoom(roomID) {
+	canJoinGameRoom(roomID, playerName) {
 		const gameSocket = this.gameServers.get(roomID);
 
 		if (gameSocket === undefined) {
@@ -121,6 +123,11 @@ class GameSocketManager {
 			return {
 				available: false,
 				errorMessage: "The room you are trying to join is already full."
+			};
+		} else if (gameSocket.game.nameExist(playerName) === true) {
+			return {
+				available: false,
+				errorMessage: "This username already exist in the game. Consider using another one."
 			};
 		}
 

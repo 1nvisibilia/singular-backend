@@ -45,11 +45,12 @@ class GameSocket {
 
 	/**
 	 * @param { Socket } socket
+	 * @param { String } playerName
 	 */
-	onJoin(socket) {
+	onJoin(socket, playerName) {
 		socket.join(this.roomID);
 
-		const newPlayer = this.game.addPlayer(socket.id);
+		const newPlayer = this.game.addPlayer(socket.id, playerName);
 		if (newPlayer === null) {
 			throw new Error("adding player failed, check the log");
 		}

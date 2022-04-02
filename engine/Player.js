@@ -9,6 +9,7 @@ class Player {
 	static radius = PlayerData.radius;
 	/**
 	 * @type { Number } id
+	 * @type { String } name
 	 * @type { Number } xCord
 	 * @type { Number } yCord
 	 * @type { Number } nextX
@@ -18,6 +19,7 @@ class Player {
 	 * @type { Number } impact
 	 */
 	id;
+	name;
 	xCord;
 	yCord;
 	nextX;
@@ -28,12 +30,13 @@ class Player {
 
 	/**
 	 * @param { String } id
+	 * @param { String } playerName
 	 * @param { Number } xCord
 	 * @param { Number } yCord
-	 * @param { Number } health
 	**/
-	constructor(id, xCord, yCord) {
+	constructor(id, playerName, xCord, yCord) {
 		this.id = id;
+		this.name = playerName;
 		this.xCord = xCord;
 		this.yCord = yCord;
 		this.nextX = 0;
