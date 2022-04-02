@@ -83,7 +83,13 @@ class GameSocketManager {
 				gameSocket.onLeave(socket.id);
 				// update the connection map object
 				this.connections.set(socket.id, noRoom);
+
+				// if the room is empty after the client left, delete the room
+				if (gameSocket.empty() === true) {
+					this.gameServers.delete(roomID);
+				}
 				console.log(this.connections);
+				console.log([...this.gameServers.keys()]);
 			});
 		});
 	}

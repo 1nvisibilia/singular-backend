@@ -6,7 +6,6 @@ const frontEndURL = "http://localhost:8000";
 
 function GameServerInitializer(server) {
 	// Create and initialize the SocketIO server.
-	// SocketSetup.setup(server, frontEndURL); // this method returns the io object.
 	const gameSocketManager = new GameSocketManager(server, frontEndURL);
 
 	// Creating a new socket game room
