@@ -74,7 +74,11 @@ class GameSocket {
 	 */
 	onLeave(socketID) {
 		this.game.removePlayer(socketID);
-		this.io.to(this.roomID).emit(aPlayerLeft, this.game);
+		if (this.empty() === true) {
+			this.deactiveEventLoop();
+		} else {
+			this.io.to(this.roomID).emit(aPlayerLeft, this.game);
+		}
 	}
 
 	/**
