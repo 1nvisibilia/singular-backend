@@ -7,6 +7,8 @@ const aPlayerLeft = "a player left";
 const requestInput = "request input";
 const sendBackInput = "send back input";
 const sendGameData = "send game data";
+const sendChatMessage = "send chat message";
+const broadcastMessage = "broadcast message";
 const updateFrequency = 25; // does this affect the front-end animation frame? why?
 
 class GameSocket {
@@ -63,6 +65,17 @@ class GameSocket {
 		// setup the receiver for user inputs
 		socket.on(sendBackInput, (inputData) => {
 			this.userInputs.set(socket.id, inputData);
+		});
+
+		// start receiving messages
+		socket.on(sendChatMessage, (msg) => {
+			const sender = this.game.players.find((player) => {
+				return player.id === socket.id;
+			});
+			this.io.to(this.roomID).emit(broadcastMessage, {
+				senderName: sender.name,
+				message: msg
+			});
 		});
 
 		if (this.eventLoop === null) {

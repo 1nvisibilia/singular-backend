@@ -8,7 +8,7 @@ class Player {
 	 */
 	static radius = PlayerData.radius;
 	/**
-	 * @type { Number } id
+	 * @type { String } id
 	 * @type { String } name
 	 * @type { Number } xCord
 	 * @type { Number } yCord
