@@ -1,6 +1,8 @@
 const secureRandomString = require("secure-random-string");
+const { instrument } = require("@socket.io/admin-ui");
 const GameSocket = require("./GameSocket.js");
 const { Server: SocketServer } = require("socket.io");
+const whiteList = ["https://admin.socket.io"];
 
 const noRoom = "noRoom";
 const joinRoom = "join room";
@@ -34,7 +36,23 @@ class GameSocketManager {
 		this.connections = new Map();
 		this.io = new SocketServer(server, {
 			cors: {
-				origin: frontEndURL
+				credentials: true,
+				origin(address, callBack) {
+					if (address === frontEndURL || whiteList.indexOf(address) !== -1) {
+						callBack(null, true)
+					} else {
+						callBack(new Error(address + " is not allows by CORS"));
+					}
+				}
+			}
+		});
+
+		// Setup for socket UI audit
+		instrument(this.io, {
+			auth: {
+				type: "basic",
+				username: "j63tao",
+				password: "$2b$10$HaqEkvsFFeFkcWtAR2yoU.sBu8M3wNwVXqOFUi4xbBtkIUHVyxiLS"
 			}
 		});
 
@@ -47,7 +65,7 @@ class GameSocketManager {
 				// If the client is already in a game room, leave that room.
 				if (roomID !== noRoom && typeof roomID === "string") {
 					const gameSocket = this.gameServers.get(roomID);
-					gameSocket.onLeave(socket.id);
+					gameSocket.onLeave(socket);
 
 					// if the room is empty after the client left, delete the room
 					if (gameSocket.empty() === true) {
@@ -80,7 +98,7 @@ class GameSocketManager {
 				}
 
 				// update the gameSocket and the current players.
-				gameSocket.onLeave(socket.id);
+				gameSocket.onLeave(socket);
 				// update the connection map object
 				this.connections.set(socket.id, noRoom);
 

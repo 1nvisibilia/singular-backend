@@ -1,4 +1,4 @@
-const { Server: SocketServer } = require("socket.io");
+const { Server: SocketServer, Socket } = require("socket.io");
 const Game = require("../engine/Game.js");
 
 const currentGameStatus = "current game status";
@@ -84,10 +84,15 @@ class GameSocket {
 	}
 
 	/**
-	 * @param { Number } socketID
+	 * @param { Socket } socket
 	 */
-	onLeave(socketID) {
-		this.game.removePlayer(socketID);
+	onLeave(socket) {
+		// Unregister all event listeners of the client
+		socket.removeAllListeners(sendBackInput);
+		socket.removeAllListeners(sendChatMessage);
+
+		// Remove the client from the game
+		this.game.removePlayer(socket.id);
 		if (this.empty() === true) {
 			this.deactiveEventLoop();
 		} else {
