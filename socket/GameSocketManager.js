@@ -39,7 +39,7 @@ class GameSocketManager {
 				credentials: true,
 				origin(address, callBack) {
 					if (address === frontEndURL || whiteList.indexOf(address) !== -1) {
-						callBack(null, true)
+						callBack(null, true);
 					} else {
 						callBack(new Error(address + " is not allows by CORS"));
 					}

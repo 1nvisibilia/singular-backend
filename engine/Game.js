@@ -72,7 +72,7 @@ class Game {
 	nameExist(newName) {
 		const exist = this.players.find((player) => {
 			return player.name === newName;
-		})
+		});
 		if (exist === undefined) {
 			return false;
 		}

@@ -17,7 +17,7 @@ app.use(cors({
 		if (whiteList.includes(origin)) {
 			return callback(null, true);
 		}
-		callback(new Error('Not allowed by CORS'));
+		callback(new Error("Not allowed by CORS"));
 	}
 }));
 
