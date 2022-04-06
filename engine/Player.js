@@ -1,4 +1,4 @@
-const { PlayerData } = require("./EngineData.json");
+const { PlayerData, CanvasData } = require("./EngineData.json");
 const coolDownTime = PlayerData.shootingCoolDown;
 const moveSpeed = PlayerData.moveSpeed;
 
@@ -83,8 +83,14 @@ class Player {
 	 * @returns { void }
 	 */
 	update() {
-		this.xCord += this.nextX;
-		this.yCord += this.nextY;
+		if (this.xCord + this.nextX - Player.radius > 0 &&
+			this.xCord + this.nextX + Player.radius < CanvasData.width) {
+			this.xCord += this.nextX;
+		}
+		if (this.yCord + this.nextY - Player.radius > 0 &&
+			this.yCord + this.nextY + Player.radius < CanvasData.height) {
+			this.yCord += this.nextY;
+		}
 	}
 
 	/**
