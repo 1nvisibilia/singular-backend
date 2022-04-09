@@ -158,6 +158,9 @@ class Game {
 
 		// Bullet/Player Collision
 		for (let i = 0; i < this.players.length; ++i) {
+			if (this.players[i].health <= 0) {
+				continue;
+			}
 			for (let j = 0; j < this.bullets.length; ++j) {
 				if (this.bullets[j].impact > 0) {
 					continue;
@@ -168,7 +171,13 @@ class Game {
 
 		// Player/Player Collision
 		for (let i = 0; i < this.players.length; ++i) {
+			if (this.players[i].health <= 0) {
+				continue;
+			}
 			for (let j = i + 1; j < this.players.length; ++j) {
+				if (this.players[j].health <= 0) {
+					continue;
+				}
 				this.updateCollision(this.players[i], this.players[j]);
 			}
 		}
@@ -200,7 +209,7 @@ class Game {
 			}
 
 			const currentPlayer = this.players.find((player) => player.id === PlayerID);
-			if (currentPlayer === undefined) {
+			if (currentPlayer === undefined || currentPlayer.health <= 0) {
 				continue;
 			}
 
@@ -232,7 +241,9 @@ class Game {
 
 		// Change players moves
 		this.players.forEach((player) => {
-			player.update();
+			if (player.health > 0) {
+				player.update();
+			}
 		});
 
 		// Change bullets moves while removing out of screen bullets
