@@ -104,18 +104,18 @@ class Game {
 	}
 
 	/**
-	 * 
 	 * @param { String } playerID
-	 * @returns { Boolean } : if removal is successful
+	 * @returns { String } the name of the player removed
 	 */
 	removePlayer(playerID) {
 		const disconnectedUserIndex = this.players.findIndex(player => player.id === playerID);
 		if (disconnectedUserIndex !== -1) {
+			const playerLeftName = this.players[disconnectedUserIndex].name;
 			this.players.splice(disconnectedUserIndex, 1);
 			this.spots[disconnectedUserIndex] = true;
-			return true;
+			return playerLeftName;
 		}
-		return false;
+		return null;
 	}
 
 	/**

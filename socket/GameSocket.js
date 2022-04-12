@@ -92,11 +92,14 @@ class GameSocket {
 		socket.removeAllListeners(sendChatMessage);
 
 		// Remove the client from the game
-		this.game.removePlayer(socket.id);
+		const playerLeftName = this.game.removePlayer(socket.id);
 		if (this.empty() === true) {
 			this.deactiveEventLoop();
 		} else {
-			this.io.to(this.roomID).emit(aPlayerLeft, this.game);
+			this.io.to(this.roomID).emit(aPlayerLeft, {
+				game: this.game,
+				playerLeftName: playerLeftName
+			});
 		}
 	}
 
