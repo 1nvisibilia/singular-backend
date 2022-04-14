@@ -27,6 +27,10 @@ class Game {
 	 */
 	players;
 	/**
+	 * @type { String[] } killedPlayerQueue
+	 */
+	killedPlayerQueue;
+	/**
 	 * @type { Bullet[] } bullets
 	 */
 	bullets;
@@ -44,6 +48,7 @@ class Game {
 	 */
 	constructor() {
 		this.players = [];
+		this.killedPlayerQueue = [];
 		this.spots = new Array(maxPlayers);
 		this.spots.fill(true);
 		Object.seal(this.spots);
@@ -170,17 +175,27 @@ class Game {
 		}
 
 		// Player/Player Collision
-		for (let i = 0; i < this.players.length; ++i) {
-			if (this.players[i].health <= 0) {
-				continue;
-			}
-			for (let j = i + 1; j < this.players.length; ++j) {
-				if (this.players[j].health <= 0) {
-					continue;
-				}
-				this.updateCollision(this.players[i], this.players[j]);
-			}
-		}
+		/**
+		 * @param { This is currently disable, we will add 'attackDamage' field to player and bullet }
+		 */
+		// for (let i = 0; i < this.players.length; ++i) {
+		// 	if (this.players[i].health <= 0) {
+		// 		continue;
+		// 	}
+		// 	for (let j = i + 1; j < this.players.length; ++j) {
+		// 		if (this.players[j].health <= 0) {
+		// 			continue;
+		// 		}
+		// 		// currently, player player collision does not do anything
+		// 		this.updateCollision(this.players[i], this.players[j]);
+		// 		if (this.players[i].health <= 0) {
+		// 			this.killedPlayerQueue.push(this.players[i].name);
+		// 		}
+		// 		if (this.players[j].health <= 0) {
+		// 			this.killedPlayerQueue.push(this.players[j].name);
+		// 		}
+		// 	}
+		// }
 
 		// Remove all collided bullets.
 		for (let i = this.bullets.length - 1; i >= 0; --i) {
@@ -191,9 +206,15 @@ class Game {
 
 		// Update Players Health
 		this.players.forEach((player) => {
+			if (player.health <= 0) {
+				return;
+			}
 			if (player.impact !== 0) {
 				player.health -= player.impact;
 				player.impact = 0;
+			}
+			if (player.health <= 0) {
+				this.killedPlayerQueue.push(player.name);
 			}
 		});
 	}
@@ -202,6 +223,9 @@ class Game {
 	 * @param { Map } InputMap
 	 */
 	updateEntities(InputMap) {
+		// flush all the previously killed player names
+		this.killedPlayerQueue = [];
+
 		// Change players' next move
 		for (const [PlayerID, inputData] of InputMap.entries()) {
 			if (inputData === null) {

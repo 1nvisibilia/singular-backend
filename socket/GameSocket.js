@@ -4,6 +4,7 @@ const Game = require("../engine/Game.js");
 const currentGameStatus = "current game status";
 const aPlayerJoined = "a user joined";
 const aPlayerLeft = "a player left";
+const playersKilled = "players killed";
 const requestInput = "request input";
 const sendBackInput = "send back input";
 const sendGameData = "send game data";
@@ -123,6 +124,9 @@ class GameSocket {
 
 			// emit game data back to players
 			this.io.to(this.roomID).emit(sendGameData, this.game);
+
+			// emit game kill statuses to players
+			this.io.to(this.roomID).emit(playersKilled, this.game.killedPlayerQueue);
 
 			// request user input
 			this.requestUserInputs();
