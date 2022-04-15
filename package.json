@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "The backend service for the real-time multiplayer game Singular.",
   "main": "index.js",
+  "engines": {
+    "node": "16.14.0",
+    "npm": "8.3.1"
+  },
   "scripts": {
     "dev": "nodemon index.js",
     "lint": "npx eslint . --ext .js > lintresult.txt",
