@@ -14,13 +14,26 @@ const whiteList = ["http://localhost:8000", "https://admin.socket.io"];
 // Allowing for Cross-origin Access
 app.use(cors({
 	credentials: true,
-	origin(origin, callback) {
-		if (whiteList.includes(origin)) {
-			return callback(null, true);
-		}
-		callback(errorMessage, false);
+	origin(_origin, callback) {
+		return callback(null, true);
 	}
 }));
+
+// Only allow whitelist origins to make API requests
+app.use("/", (req, res, next) => {
+	const originURL = req.get("origin");
+	console.log(originURL);
+	const allow = whiteList.find((url) => {
+		return url.includes(originURL);
+	});
+
+	if (allow !== undefined) {
+		next();
+	} else {
+		res.status(401);
+		res.send(errorMessage);
+	}
+});
 
 // Setting up the routes
 app.use("/api", routeInitializer({ server }));
