@@ -25,7 +25,6 @@ app.use(cors({
 // Only allow whitelist origins to make API requests
 app.use("/", (req, res, next) => {
 	const originURL = req.get("origin");
-	console.log(originURL);
 	const allow = whiteList.find((url) => {
 		return url.includes(originURL);
 	});
