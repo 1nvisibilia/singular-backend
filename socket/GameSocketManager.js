@@ -53,7 +53,7 @@ class GameSocketManager {
 			auth: {
 				type: "basic",
 				username: "j63tao",
-				password: "$2b$10$HaqEkvsFFeFkcWtAR2yoU.sBu8M3wNwVXqOFUi4xbBtkIUHVyxiLS"
+				password: process.env.SOCKET_ADMIN_UI_PASSWORD_HASH
 			}
 		});
 
