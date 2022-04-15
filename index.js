@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const routeInitializer = require("./api/routes");
+const errorMessage = require("./direct-access");
 
 // Creating the Http server
 const http = require("http");
@@ -17,7 +18,7 @@ app.use(cors({
 		if (whiteList.includes(origin)) {
 			return callback(null, true);
 		}
-		callback(new Error("Not allowed by CORS"));
+		callback(errorMessage, false);
 	}
 }));
 
