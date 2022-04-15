@@ -1,3 +1,6 @@
+// config environment variables
+require("dotenv").config();
+
 // Create the express server
 const express = require("express");
 const app = express();
