@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const GameServer = express.Router();
 
 const GameSocketManager = require("../../socket/GameSocketManager");
-const frontEndURL = "http://localhost:8000";
+const frontEndURL = process.env.FRONTEND_SERVICE || "https://localhost:8000";
 
 GameServer.use(bodyParser.json());
 

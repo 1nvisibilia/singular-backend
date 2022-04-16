@@ -12,7 +12,10 @@ const errorMessage = require("./direct-access");
 const http = require("http");
 const server = http.createServer(app);
 const PORT = process.env.PORT || 9000;
-const whiteList = ["http://localhost:8000", "https://admin.socket.io"];
+const whiteList = [
+	process.env.FRONTEND_SERVICE || "https://localhost:8000",
+	"https://admin.socket.io"
+];
 
 // Allowing for Cross-origin Access
 app.use(cors({
