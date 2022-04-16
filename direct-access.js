@@ -1,4 +1,6 @@
-const frontEndURL = process.env.FRONTEND_SERVICE || "https://localhost:8000";
+const frontEndURL = process.env.RUNNING_ENV === "development"
+	? "http://localhost:8000"
+	: process.env.FRONTEND_SERVICE;
 
 module.exports = `
 <h1> 401 (Unauthorized) </h1>

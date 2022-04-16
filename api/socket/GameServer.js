@@ -3,7 +3,9 @@ const bodyParser = require("body-parser");
 const GameServer = express.Router();
 
 const GameSocketManager = require("../../socket/GameSocketManager");
-const frontEndURL = process.env.FRONTEND_SERVICE || "https://localhost:8000";
+const frontEndURL = process.env.RUNNING_ENV === "development"
+	? "http://localhost:8000"
+	: process.env.FRONTEND_SERVICE;
 
 GameServer.use(bodyParser.json());
 

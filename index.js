@@ -13,7 +13,7 @@ const http = require("http");
 const server = http.createServer(app);
 const PORT = process.env.PORT || 9000;
 const whiteList = [
-	process.env.FRONTEND_SERVICE || "https://localhost:8000",
+	process.env.RUNNING_ENV === "development" ? "http://localhost:8000" : process.env.FRONTEND_SERVICE,
 	"https://admin.socket.io"
 ];
 
