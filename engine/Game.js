@@ -12,13 +12,13 @@ const stateMap = { // do we need this?
 	ingame: 2,
 	finished: 3
 };
-const initialPositions = [
-	[100, 100],
-	[200, 100],
-	[300, 100],
-	[100, 200],
-	[200, 200],
-	[300, 200]
+const initialPlayerData = [
+	[100, 100, "#FF2D00"],
+	[200, 100, "#FFCA3D"],
+	[300, 100, "#00FF03"],
+	[100, 200, "#00E0DB"],
+	[200, 200, "#2D2AB2"],
+	[300, 200, "#8D00CE"]
 ];
 
 class Game {
@@ -95,10 +95,10 @@ class Game {
 		}
 
 		const index = this.spots.findIndex(spot => spot);
-		const position = initialPositions[index];
+		const initData = initialPlayerData[index];
 		this.spots[index] = false;
 
-		const newPlayer = new Player(newPlayerID, playerName, position[0], position[1]);
+		const newPlayer = new Player(newPlayerID, playerName, initData[0], initData[1], initData[2]);
 		this.players.push(newPlayer);
 
 		// if (this.players.length === maxPlayers) {

@@ -21,6 +21,7 @@ class Player {
 	 * @type { Number } health
 	 * @type { Boolean } shootingCooldown
 	 * @type { Number } impact
+	 * @type { String } color
 	 */
 	id;
 	name;
@@ -31,14 +32,17 @@ class Player {
 	health;
 	shootingCooldown;
 	impact;
+	color;
 
 	/**
 	 * @param { String } id
 	 * @param { String } playerName
 	 * @param { Number } xCord
 	 * @param { Number } yCord
+	 * @param { String } color
 	**/
-	constructor(id, playerName, xCord, yCord) {
+	constructor(id, playerName, xCord, yCord, color) {
+		this.color = color;
 		this.id = id;
 		this.name = playerName;
 		this.xCord = xCord;
