@@ -9,6 +9,10 @@ class Bullet {
 	/**
 	 * @type { Number }
 	 */
+	static damage = BulletData.damage;
+	/**
+	 * @type { Number }
+	 */
 	xCord;
 
 	/**
@@ -50,6 +54,13 @@ class Bullet {
 	 */
 	get radius() {
 		return Bullet.radius;
+	}
+
+	/**
+	 * @returns { Number } the damage a bullet does
+	 */
+	get damage() {
+		return Bullet.damage;
 	}
 
 	/**

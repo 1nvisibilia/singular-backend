@@ -137,8 +137,8 @@ class Game {
 		);
 
 		if (distance < entity1.radius + entity2.radius) {
-			++entity1.impact;
-			++entity2.impact;
+			entity1.impact += entity2.damage;
+			entity2.impact += entity1.damage;
 		}
 	}
 
@@ -175,27 +175,24 @@ class Game {
 		}
 
 		// Player/Player Collision
-		/**
-		 * @param { This is currently disable, we will add 'attackDamage' field to player and bullet }
-		 */
-		// for (let i = 0; i < this.players.length; ++i) {
-		// 	if (this.players[i].health <= 0) {
-		// 		continue;
-		// 	}
-		// 	for (let j = i + 1; j < this.players.length; ++j) {
-		// 		if (this.players[j].health <= 0) {
-		// 			continue;
-		// 		}
-		// 		// currently, player player collision does not do anything
-		// 		this.updateCollision(this.players[i], this.players[j]);
-		// 		if (this.players[i].health <= 0) {
-		// 			this.killedPlayerQueue.push(this.players[i].name);
-		// 		}
-		// 		if (this.players[j].health <= 0) {
-		// 			this.killedPlayerQueue.push(this.players[j].name);
-		// 		}
-		// 	}
-		// }
+		for (let i = 0; i < this.players.length; ++i) {
+			if (this.players[i].health <= 0) {
+				continue;
+			}
+			for (let j = i + 1; j < this.players.length; ++j) {
+				if (this.players[j].health <= 0) {
+					continue;
+				}
+				// currently, player player collision does not do anything
+				this.updateCollision(this.players[i], this.players[j]);
+				if (this.players[i].health <= 0) {
+					this.killedPlayerQueue.push(this.players[i].name);
+				}
+				if (this.players[j].health <= 0) {
+					this.killedPlayerQueue.push(this.players[j].name);
+				}
+			}
+		}
 
 		// Remove all collided bullets.
 		for (let i = this.bullets.length - 1; i >= 0; --i) {

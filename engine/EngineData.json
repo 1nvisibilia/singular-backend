@@ -4,11 +4,13 @@
 		"height": 650
 	},
 	"BulletData": {
+		"damage": 10,
 		"radius": 10,
 		"moveSpeed": 5
 	},
 	"PlayerData": {
-		"initHealth": 10,
+		"damage": 1,
+		"initHealth": 100,
 		"radius": 30,
 		"moveSpeed": 3,
 		"shootingCoolDown": 400

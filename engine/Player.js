@@ -8,6 +8,10 @@ class Player {
 	 */
 	static radius = PlayerData.radius;
 	/**
+	 * @type { Number }
+	 */
+	static damage = PlayerData.damage;
+	/**
 	 * @type { String } id
 	 * @type { String } name
 	 * @type { Number } xCord
@@ -51,6 +55,13 @@ class Player {
 	 */
 	get radius() {
 		return Player.radius;
+	}
+
+	/**
+	 * @returns { Number } the damage a player does
+	 */
+	get damage() {
+		return Player.damage;
 	}
 
 	/**
