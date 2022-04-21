@@ -27,7 +27,7 @@ class Game {
 	 */
 	players;
 	/**
-	 * @type { String[] } killedPlayerQueue
+	 * @type { Array<{ name: String, color: String }> } killedPlayerQueue
 	 */
 	killedPlayerQueue;
 	/**
@@ -110,15 +110,16 @@ class Game {
 
 	/**
 	 * @param { String } playerID
-	 * @returns { String } the name of the player removed
+	 * @returns { { name: String, color: String } } the name and color of the player removed
 	 */
 	removePlayer(playerID) {
 		const disconnectedUserIndex = this.players.findIndex(player => player.id === playerID);
 		if (disconnectedUserIndex !== -1) {
-			const playerLeftName = this.players[disconnectedUserIndex].name;
+			const name = this.players[disconnectedUserIndex].name;
+			const color = this.players[disconnectedUserIndex].color;
 			this.players.splice(disconnectedUserIndex, 1);
 			this.spots[disconnectedUserIndex] = true;
-			return playerLeftName;
+			return { name, color };
 		}
 		return null;
 	}
@@ -183,14 +184,7 @@ class Game {
 				if (this.players[j].health <= 0) {
 					continue;
 				}
-				// currently, player player collision does not do anything
 				this.updateCollision(this.players[i], this.players[j]);
-				if (this.players[i].health <= 0) {
-					this.killedPlayerQueue.push(this.players[i].name);
-				}
-				if (this.players[j].health <= 0) {
-					this.killedPlayerQueue.push(this.players[j].name);
-				}
 			}
 		}
 
@@ -211,7 +205,10 @@ class Game {
 				player.impact = 0;
 			}
 			if (player.health <= 0) {
-				this.killedPlayerQueue.push(player.name);
+				this.killedPlayerQueue.push({
+					name: player.name,
+					color: player.color
+				});
 			}
 		});
 	}

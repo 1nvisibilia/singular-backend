@@ -93,13 +93,13 @@ class GameSocket {
 		socket.removeAllListeners(sendChatMessage);
 
 		// Remove the client from the game
-		const playerLeftName = this.game.removePlayer(socket.id);
+		const leftPlayerInfo = this.game.removePlayer(socket.id);
 		if (this.empty() === true) {
 			this.deactiveEventLoop();
 		} else {
 			this.io.to(this.roomID).emit(aPlayerLeft, {
 				game: this.game,
-				playerLeftName: playerLeftName
+				leftPlayerInfo: leftPlayerInfo
 			});
 		}
 	}
@@ -125,8 +125,10 @@ class GameSocket {
 			// emit game data back to players
 			this.io.to(this.roomID).emit(sendGameData, this.game);
 
-			// emit game kill statuses to players
-			this.io.to(this.roomID).emit(playersKilled, this.game.killedPlayerQueue);
+			if (this.game.killedPlayerQueue.length > 0) {
+				// emit game kill statuses to players
+				this.io.to(this.roomID).emit(playersKilled, this.game.killedPlayerQueue);
+			}
 
 			// request user input
 			this.requestUserInputs();
