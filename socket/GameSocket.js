@@ -75,6 +75,7 @@ class GameSocket {
 			});
 			this.io.to(this.roomID).emit(broadcastMessage, {
 				senderName: sender.name,
+				senderColor: sender.color,
 				message: msg
 			});
 		});
