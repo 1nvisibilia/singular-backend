@@ -94,6 +94,18 @@ class GameSocketManager {
 
 			socket.on(leaveRoom, (roomID) => {
 				const gameSocket = this.gameServers.get(roomID);
+/*
+2022-04-22T03:54:51.496842+00:00 app[web.1]: /app/socket/GameSocketManager.js:98
+2022-04-22T03:54:51.496845+00:00 app[web.1]: 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
+2022-04-22T03:54:51.496846+00:00 app[web.1]: 					^
+2022-04-22T03:54:51.496846+00:00 app[web.1]:
+2022-04-22T03:54:51.496847+00:00 app[web.1]: Error: Invalid Room ID, change this to a socket emit error to the front end later
+2022-04-22T03:54:51.496848+00:00 app[web.1]:     at Socket.<anonymous> (/app/socket/GameSocketManager.js:98:12)
+2022-04-22T03:54:51.496848+00:00 app[web.1]:     at Socket.emit (node:events:520:28)
+2022-04-22T03:54:51.496849+00:00 app[web.1]:     at Socket.emitUntyped (/app/node_modules/socket.io/dist/typed-events.js:69:22)
+2022-04-22T03:54:51.496849+00:00 app[web.1]:     at /app/node_modules/socket.io/dist/socket.js:466:39
+2022-04-22T03:54:51.496850+00:00 app[web.1]:     at processTicksAndRejections (node:internal/process/task_queues:78:11)
+*/
 				if (gameSocket === undefined) {
 					throw new Error("Invalid Room ID, change this to a socket emit error to the front end later");
 				}

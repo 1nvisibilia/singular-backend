@@ -96,6 +96,16 @@ class Game {
 
 		const index = this.spots.findIndex(spot => spot);
 		const initData = initialPlayerData[index];
+		/*
+2022-04-22T03:54:46.127196+00:00 app[web.1]: TypeError: Cannot add property -1, object is not extensible
+2022-04-22T03:54:46.127196+00:00 app[web.1]:     at Game.addPlayer (/app/engine/Game.js:99:21)
+2022-04-22T03:54:46.127197+00:00 app[web.1]:     at GameSocket.onJoin (/app/socket/GameSocket.js:56:31)
+2022-04-22T03:54:46.127197+00:00 app[web.1]:     at Socket.<anonymous> (/app/socket/GameSocketManager.js:88:16)
+2022-04-22T03:54:46.127198+00:00 app[web.1]:     at Socket.emit (node:events:520:28)
+2022-04-22T03:54:46.127199+00:00 app[web.1]:     at Socket.emitUntyped (/app/node_modules/socket.io/dist/typed-events.js:69:22)
+2022-04-22T03:54:46.127199+00:00 app[web.1]:     at /app/node_modules/socket.io/dist/socket.js:466:39
+2022-04-22T03:54:46.127200+00:00 app[web.1]:     at processTicksAndRejections (node:internal/process/task_queues:78:11)
+ */
 		this.spots[index] = false;
 
 		const newPlayer = new Player(newPlayerID, playerName, initData[0], initData[1], initData[2]);
